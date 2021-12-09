@@ -9,10 +9,13 @@ const cors = require( 'cors' );
 app.use( cors() );
 app.use( express.json() );
 
+//Create the database client instance
 const { MongoClient } = require( 'mongodb' );
 
+//connect to the database with user credentials
 const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
+//create the database client from the client instance
 const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology: true } );
 
 const run = async () => {
@@ -20,10 +23,10 @@ const run = async () => {
         await client.connect();
         console.log( 'Connected to MongoDB' );
 
-        //Create the database
+        //connect to  the database
         const database = client.db( "algogendb" );
 
-        //Create the collections
+        //Connect to the database collections of notes and tags
         const notesCollection = database.collection( "notes" );
         const tagsCollection = database.collection( "tags" );
 
@@ -32,6 +35,13 @@ const run = async () => {
             const cursor = notesCollection.find( {} );
             const notes = await cursor.toArray();
             res.send( notes );
+        } );
+
+        //GET Tags API (Send all notes information to the client)
+        app.get( '/tags', async ( req, res ) => {
+            const cursor = tagsCollection.find( {} );
+            const tags = await cursor.toArray();
+            res.send( tags );
         } );
     }
     catch ( err ) {
