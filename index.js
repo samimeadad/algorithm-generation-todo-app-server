@@ -43,6 +43,22 @@ const run = async () => {
             const tags = await cursor.toArray();
             res.send( tags );
         } );
+
+        //POST API (Add a Note)
+        app.post( '/notes', async ( req, res ) => {
+            const note = req.body;
+            console.log( note );
+            const result = await notesCollection.insertOne( note );
+            res.json( result );
+        } );
+
+        //POST API (Add a Tag)
+        app.post( '/tags', async ( req, res ) => {
+            const tag = req.body;
+            console.log( tag );
+            const result = await tagsCollection.insertOne( tag );
+            res.json( result );
+        } );
     }
     catch ( err ) {
         console.error( err );
