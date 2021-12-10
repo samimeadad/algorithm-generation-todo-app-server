@@ -3,6 +3,7 @@ const express = require( 'express' );
 const app = express();
 const port = process.env.PORT || 5001;
 const cors = require( 'cors' );
+const ObjectId = require( 'mongodb' ).ObjectId;
 
 
 //middleware
@@ -57,6 +58,41 @@ const run = async () => {
             const tag = req.body;
             console.log( tag );
             const result = await tagsCollection.insertOne( tag );
+            res.json( result );
+        } );
+
+        //DELETE API (Delete a Note)
+        app.delete( '/notes/:id', async ( req, res ) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId( id ) };
+            const result = await notesCollection.deleteOne( query );
+            res.json( result );
+        } );
+
+        //DELETE API (Delete a Tag)
+        app.delete( '/tags/:id', async ( req, res ) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId( id ) };
+            const result = await tagsCollection.deleteOne( query );
+            res.json( result );
+        } );
+
+        //UPDATE API (Update a Note)
+        app.put( '/notes/:id', async ( req, res ) => {
+            const noteId = req.params.id;
+            const updatedNote = req.body;
+            console.log( updatedNote );
+            const filter = { _id: ObjectId( noteId ) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    noteTitle: updatedNote.noteTitle,
+                    noteData: updatedNote.noteData,
+                    noteTag: updatedNote.noteTag
+                },
+            };
+
+            const result = await notesCollection.updateOne( filter, updateDoc, options );
             res.json( result );
         } );
     }
