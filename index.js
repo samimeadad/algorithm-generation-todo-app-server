@@ -14,7 +14,7 @@ app.use( express.json() );
 const { MongoClient } = require( 'mongodb' );
 
 //connect to the database with user credentials
-const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/algogendb?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 //create the database client from the client instance
 const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology: true } );
