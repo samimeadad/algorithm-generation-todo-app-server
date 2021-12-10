@@ -5,22 +5,23 @@ const port = process.env.PORT || 5001;
 const cors = require( 'cors' );
 const ObjectId = require( 'mongodb' ).ObjectId;
 
-
-//middleware
+//middleware for CORS (Cross Origin Resource Sharing) and JSON conversion
 app.use( cors() );
 app.use( express.json() );
 
 //Create the database client instance
 const { MongoClient } = require( 'mongodb' );
 
-//connect to the database with user credentials
+//define database url with user credentials
 const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
-//create the database client from the client instance
+//create the database client from the client instance with its user credentials
 const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology: true } );
 
+//declare the run function to implement the database connection and CRUD operations
 const run = async () => {
     try {
+        //connect to the client to the database
         await client.connect();
         console.log( 'Connected to MongoDB' );
 
@@ -96,10 +97,12 @@ const run = async () => {
         console.error( err );
     }
     finally {
+        //close the database connection
         // await client.close();
     }
 };
 
+//invoke the function run() and catch the error if any
 run().catch( console.dir );
 
 app.get( '/', ( req, res ) => {
@@ -107,5 +110,5 @@ app.get( '/', ( req, res ) => {
 } )
 
 app.listen( port, () => {
-    console.log( `AlgoGen ToDo App Server App listening at http://localhost:${ port }` );
+    console.log( `AlgoGen ToDo App Server App listening at https://enigmatic-coast-44636.herokuapp.com/:${ port }` );
 } )
