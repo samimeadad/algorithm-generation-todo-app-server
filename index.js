@@ -14,7 +14,7 @@ app.use( express.json() );
 const { MongoClient } = require( 'mongodb' );
 
 //connect to the database with user credentials
-const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.iezc6.mongodb.net/algogendb?retryWrites=true&w=majority`;
 
 //create the database client from the client instance
 const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology: true } );
@@ -24,10 +24,10 @@ const run = async () => {
         await client.connect();
         console.log( 'Connected to MongoDB' );
 
-        //connect to  the database
+        //store the database to a variable
         const database = client.db( "algogendb" );
 
-        //Connect to the database collections of notes and tags
+        //store the database collections of notes and tags in separate variables
         const notesCollection = database.collection( "notes" );
         const tagsCollection = database.collection( "tags" );
 
@@ -48,7 +48,6 @@ const run = async () => {
         //POST API (Add a Note)
         app.post( '/notes', async ( req, res ) => {
             const note = req.body;
-            console.log( note );
             const result = await notesCollection.insertOne( note );
             res.json( result );
         } );
@@ -56,7 +55,6 @@ const run = async () => {
         //POST API (Add a Tag)
         app.post( '/tags', async ( req, res ) => {
             const tag = req.body;
-            console.log( tag );
             const result = await tagsCollection.insertOne( tag );
             res.json( result );
         } );
@@ -64,16 +62,16 @@ const run = async () => {
         //DELETE API (Delete a Note)
         app.delete( '/notes/:id', async ( req, res ) => {
             const id = req.params.id;
-            const query = { _id: ObjectId( id ) };
-            const result = await notesCollection.deleteOne( query );
+            const filter = { _id: ObjectId( id ) };
+            const result = await notesCollection.deleteOne( filter );
             res.json( result );
         } );
 
         //DELETE API (Delete a Tag)
         app.delete( '/tags/:id', async ( req, res ) => {
             const id = req.params.id;
-            const query = { _id: ObjectId( id ) };
-            const result = await tagsCollection.deleteOne( query );
+            const filter = { _id: ObjectId( id ) };
+            const result = await tagsCollection.deleteOne( filter );
             res.json( result );
         } );
 
@@ -81,7 +79,6 @@ const run = async () => {
         app.put( '/notes/:id', async ( req, res ) => {
             const noteId = req.params.id;
             const updatedNote = req.body;
-            console.log( updatedNote );
             const filter = { _id: ObjectId( noteId ) };
             const options = { upsert: true };
             const updateDoc = {
@@ -91,7 +88,6 @@ const run = async () => {
                     noteTag: updatedNote.noteTag
                 },
             };
-
             const result = await notesCollection.updateOne( filter, updateDoc, options );
             res.json( result );
         } );
