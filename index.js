@@ -38,7 +38,7 @@ const run = async () => {
             res.send( notes );
         } );
 
-        //GET Tags API (Send all notes information to the client)
+        //GET Tags API (Send all tags information to the client)
         app.get( '/tags', async ( req, res ) => {
             const cursor = tagsCollection.find( {} );
             const tags = await cursor.toArray();
